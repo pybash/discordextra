@@ -1,0 +1,16 @@
+{
+    "name": "Discord Extra",
+    "version": "1.0",
+    "description": "Adds more functionality to Discord Web",
+    "permissions": ["storage"],
+    "content_scripts": [{
+        "matches": ["https://*.discord.com/*"],
+        "js": ["discordUI.js"]
+    }],
+    "web_accessible_resources": [
+        "pages/*.html",
+        "pages/settings.html",
+        "pages/github.html"
+    ],
+    "manifest_version":2
+}
