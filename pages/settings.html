@@ -1,10 +1,62 @@
+<style>
+   #themeBox {
+      position: relative;
+      width:70%;
+      height:200px;
+      resize:none;
+      top:-200px;
+      left: 30%
+   }
+   #savedThemes {
+      width:25%;
+      height:200px;
+      overflow-y:scroll;
+      display:block;
+      background-color:rgba(0,0,0,0.1);
+      padding-left:10px;
+      padding-bottom:9px;
+      padding-top:9px;
+   }
+   #savedThemes:hover {
+      border-color: rgba(0,0,0,0.3);
+   }
+   #savedThemes .savedItem {
+      padding-bottom:10px;
+      padding-top:10px;
+      width:100%;
+      margin-top:3px;
+      background-color:rgba(0,0,0,0.1);
+      color:#bcc1c7;
+      transition: .3s;
+   }
+   #savedThemes .savedItem:hover {
+      color:white;
+   }
+</style>
 
 <h2 class="colorStandard-2KCXvj size14-e6ZScH h2-2gWE-o title-3sZWYQ defaultColor-1_ajX0 defaultMarginh2-2LTaUL">Discord Extra Settings</h2>
 <div>
-    <h5 class="colorStandard-2KCXvj size14-e6ZScH h5-18_1nd title-3sZWYQ defaultMarginh5-2mL-bP">Discord UI</h5>
+    <h5 class="colorStandard-2KCXvj size14-e6ZScH h5-18_1nd title-3sZWYQ defaultMarginh5-2mL-bP">Discord Background</h5>
     <div class="colorStandard-2KCXvj size14-e6ZScH" style="padding-bottom:10px">Set Discord Custom Background Image</div>
     <input class="inputDefault-_djjkz input-cIJ7To" type="text" placeholder="https://*.discord.com/*.png" id="bgImageInput" autocomplete="off">
     <button type="submit" class="button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMedium-1AC_Sl grow-q77ONN" style="margin-top:10px;float:right" id="bgImage"><div class="contents-18-Yxp">Change</div></button>
     <button type="submit" class="button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMedium-1AC_Sl grow-q77ONN" style="margin-top:10px;float:right;margin-right:6px" id="removeBg"><div class="contents-18-Yxp">Remove Background</div></button>
-    <div class="divider-3573oO dividerDefault-3rvLe-" style="margin-top:60px"></div>
+    <div style="top:50px; position: relative">
+       <h5 class="colorStandard-2KCXvj size14-e6ZScH h5-18_1nd title-3sZWYQ defaultMarginh5-2mL-bP">Discord Theme</h5>
+       <div class=" contentRegionScroller-26nc1e auto-Ge5KZx scrollerBase-289Jih" id ="savedThemes">
+          <button class="savedItem">Discord Default</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+          <button class="savedItem">Discord</button>
+       </div>
+       <textarea class="inputDefault-_djjkz input-cIJ7To" id="themeBox" placeholder="Put a custom theme here!" data-gramm_editor="false"></textarea>
+       <button type="submit" class="button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMedium-1AC_Sl grow-q77ONN" style="float:right;margin-top:10px" id="applyTheme"><div class="contents-18-Yxp">Apply Theme</div></button>
+
+    </div>
 </div>

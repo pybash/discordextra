@@ -1,7 +1,12 @@
 var hookedSettings = false;
 var hookedHideBar = false;
-var wantsHideBar = true;
-var gotHideBar = false
+var discordThemes = [
+    {
+        "name": "default",
+        "icon": "https://discord.com/assets/1c8a54f25d101bdc607cec7228247a9a.svg",
+        "themeData": ""
+    }
+]
 var bgImage = ""
 chrome.storage.sync.get('bgImage', (data) => {
     if(typeof data.bgImage === undefined) {
@@ -68,6 +73,18 @@ function hookSettingsPage () {
         }
     })
     
+}
+
+function hookAboutPage () {
+    var hookGithub = setInterval(() => {
+        if(document.getElementById("githubClick") != null) {
+            var githubClick = document.getElementById("githubClick")
+            githubClick.addEventListener("click", () => {
+                window.open('https://github.com/pybash/discordextra')
+            })
+            clearInterval(hookGithub)
+        }
+    }, 100);
 }
 
 function setHideButtonFunc () {
@@ -183,6 +200,7 @@ var hookSetting = setInterval(() => {
                         readFile("pages/github.html").then((data) => {
                             document.getElementsByClassName("contentColumn-2hrIYH contentColumnDefault-1VQkGM")[0].childNodes[0].innerHTML = data
                         })
+                        hookAboutPage()
                     })
                     createElementOnSidebar(sep1)
                     if(sideBar != null) {
