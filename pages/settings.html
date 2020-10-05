@@ -8,7 +8,7 @@
       left: 30%
    }
    #savedThemes {
-      width:25%;
+      width:30%;
       height:200px;
       overflow-y:scroll;
       display:block;
@@ -26,11 +26,59 @@
       width:100%;
       margin-top:3px;
       background-color:rgba(0,0,0,0.1);
-      color:#bcc1c7;
       transition: .3s;
    }
-   #savedThemes .savedItem:hover {
-      color:white;
+   #addButton {
+      padding-bottom:10px;
+      padding-top:10px;
+      width:100%;
+      margin-top:3px;
+      background:none;
+      border: dashed 3px #bcc1c752;
+      border-spacing: 12px;
+      color:#bcc1c7;
+   }
+   .otherStuff {
+      position: relative;
+      top:70px;
+   }
+   .themeExampleContainer {
+      position: relative;
+      border: solid 2px #000000;
+      background-color: var(--background-primary);
+      width:60%;
+      height:200px;
+      float:right;
+      display:block;
+      margin-left:40px;
+      display:flex;
+   }
+   .themeExampleContainer .channelBar {
+      background-color: var(--background-tertiary);
+      width:10%;
+      height:100%;
+   }
+   .themeExampleContainer .sideBar {
+      background-color: var(--background-secondary);
+      width:18%;
+      height:100%;
+   }
+   .themeExampleContainer .sideBar .accountBadge {
+      position: relative;
+      background-color: var(--background-secondary-alt);
+      width:100%;
+      height:13%;
+      top: calc(100% - 13%)
+   }
+   .themeExampleContainer .upperBar {
+      background-color: var(--background-secondary);
+      width:55%;
+      height:11%;
+   }
+   .themeExampleContainer .memberBar {
+      background-color: var(--background-secondary);
+      width:18%;
+      height:100%;
    }
 </style>
 
@@ -41,22 +89,40 @@
     <input class="inputDefault-_djjkz input-cIJ7To" type="text" placeholder="https://*.discord.com/*.png" id="bgImageInput" autocomplete="off">
     <button type="submit" class="button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMedium-1AC_Sl grow-q77ONN" style="margin-top:10px;float:right" id="bgImage"><div class="contents-18-Yxp">Change</div></button>
     <button type="submit" class="button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMedium-1AC_Sl grow-q77ONN" style="margin-top:10px;float:right;margin-right:6px" id="removeBg"><div class="contents-18-Yxp">Remove Background</div></button>
-    <div style="top:50px; position: relative">
-       <h5 class="colorStandard-2KCXvj size14-e6ZScH h5-18_1nd title-3sZWYQ defaultMarginh5-2mL-bP">Discord Theme</h5>
-       <div class=" contentRegionScroller-26nc1e auto-Ge5KZx scrollerBase-289Jih" id ="savedThemes">
-          <button class="savedItem">Discord Default</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-          <button class="savedItem">Discord</button>
-       </div>
-       <textarea class="inputDefault-_djjkz input-cIJ7To" id="themeBox" placeholder="Put a custom theme here!" data-gramm_editor="false"></textarea>
-       <button type="submit" class="button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMedium-1AC_Sl grow-q77ONN" style="float:right;margin-top:10px" id="applyTheme"><div class="contents-18-Yxp">Apply Theme</div></button>
+    <h5 class="colorStandard-2KCXvj size14-e6ZScH h5-18_1nd title-3sZWYQ defaultMarginh5-2mL-bP" style="position:relative; top:40px">Discord Theme</h5>
+    <div style="top:40px; position: relative; display:flex; width:100%">
+      
+      <div class=" contentRegionScroller-26nc1e auto-Ge5KZx scrollerBase-289Jih" id ="savedThemes">
+         <button class="savedItem colorStandard-2KCXvj ">Discord Default</button>
+         
+      </div>
+      <div class="themeExampleContainer">
+         <div class="channelBar"></div>
+         <div class="sideBar">
+            <div class="accountBadge">
 
+            </div>
+            
+         </div>
+         <div class="upperBar"></div>
+         <div class="memberBar"></div>
+      </div>
+   </div>
+       <div class="otherStuff">
+         <h5 class="colorStandard-2KCXvj size14-e6ZScH h5-18_1nd title-3sZWYQ marginBottom8-AtZOdT">Buttons</h5>
+         <div class="flex-1xMQg5 flex-1O1GKY vertical-V37hAW flex-1O1GKY directionColumn-35P_nr justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6 marginReset-236NPn" style="flex: 1 1 auto;">
+            <div class="flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStart-H-X2h- noWrap-3jynv6" style="flex: 1 1 auto;">
+               <div class="flexChild-faoVW3" style="flex: 1 1 auto;">
+                  <label for="minifyButton" class="titleDefault-a8-ZSr title-31JmR4">Minify Sidebar Button</label>
+               </div>
+               <div class="flexChild-faoVW3 switchEnabled-V2WDBB switch-3wwwcV valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX" tabindex="0" style="flex: 0 0 auto;" id="minifyButtonCheck">
+                  <input id="minifyButton" class="checkboxEnabled-CtinEn checkbox-2tyjJg" type="checkbox" tabindex="-1" checked="">
+                  </div>
+               </div>
+               <div class="colorStandard-2KCXvj size14-e6ZScH description-3_Ncsb formText-3fs7AJ note-1V3kyJ modeDefault-3a2Ph1" style="flex: 1 1 auto;">Be able to hide sidebar with a button</div>
+               <div class="divider-3573oO dividerDefault-3rvLe-"></div>
+            </div>
+            <div class="marginBottom40-2vIwTv"> </div>
+       </div>
     </div>
 </div>

@@ -1,18 +1,80 @@
+function discordextra_log(label, text) {
+    var logText = "%c[" + label + "] %c" + text 
+    console.log(logText,"color: #3db1ff;", "color:white;")
+}
 var hookedSettings = false;
 var hookedHideBar = false;
-var discordThemes = [
-    {
-        "name": "default",
-        "icon": "https://discord.com/assets/1c8a54f25d101bdc607cec7228247a9a.svg",
-        "themeData": ""
+var cfg = {
+    bgImage: "",
+    discordThemes : [
+        {
+            "name": "Discord Default",
+            "focusedTheme": "inherit",
+            "themeData": {
+                "teritary": "",
+                "secondary": "",
+                "secondary-alt": "",
+                "interactive-unactive": "",
+                "interactive-active": "",
+                "channel-text": "",
+                "message-date": "",
+                "message-color": ""
+            }
+        },
+        {
+            "name": "Zen World",
+            "focusedTheme": "dark",
+            "themeData": {
+                "teritary": "",
+                "secondary": "",
+                "secondary-alt": "",
+                "interactive-unactive": "",
+                "interactive-active": "",
+                "channel-text": "",
+                "message-date": "",
+                "message-color": ""
+            }
+        }
+    ],
+    loadedTheme: {
+        "name": "Discord Default",
+        "focusedTheme": "inherit",
+        "themeData": {
+            "teritary": "",
+            "secondary": "",
+            "secondary-alt": "",
+            "interactive-unactive": "",
+            "interactive-active": "",
+            "channel-text": "",
+            "message-date": "",
+            "message-color": ""
+        }
+    },
+    wantsHideButton: true
+}
+chrome.storage.sync.get("cfgData", (data) => {
+    discordextra_log("Discord Extra", "Retrieved cfgData")
+    if(data.cfgData === undefined) {
+        chrome.storage.sync.set({"cfgData": cfg})
     }
-]
-var bgImage = ""
-chrome.storage.sync.get('bgImage', (data) => {
-    if(typeof data.bgImage === undefined) {
-        chrome.storage.sync.set({bgImage: ""})
+    var needsReplacement = false;
+    var replacementCFG = {}
+    for(key of Object.keys(cfg)) {
+        if(!(Object.keys(data.cfgData).includes(key))) {
+            needsReplacement = true;
+            console.log(key, " had to be replaced")
+            replacementCFG[key] = cfg[key]
+        } else {
+            replacementCFG[key] = data.cfgData[key]
+        }
+    }
+    if(needsReplacement) {
+        cfg = replacementCFG
+        chrome.storage.sync.set({"cfgData": replacementCFG})
+        discordextra_log("Discord Extra", "cfgData has been fixed")
     } else {
-        bgImage = data.bgImage
+        cfg = data.cfgData
+        discordextra_log("Discord Extra", "cfgData has been loaded")
     }
 })
 async function readFile(url) {
@@ -27,12 +89,10 @@ async function readFile(url) {
     return responseText
 }
 
-
-function discordextra_log(label, text) {
-    var logText = "%c[" + label + "] %c" + text 
-    console.log(logText,"color: #3db1ff;", "color:white;")
+function saveCFG() {
+    chrome.storage.sync.set({"cfgData": cfg})
+    discordextra_log("Discord Extra", "Saved CFG")
 }
-
 function clearSettings () {
     for(div of document.getElementsByClassName("contentColumn-2hrIYH contentColumnDefault-1VQkGM")[0].childNodes) {
         div.className = ""
@@ -40,21 +100,31 @@ function clearSettings () {
     }
 }
 
-function hookSettingsPage () {
+function hookSettingsPage() {
     var bgImage_button = document.getElementById("bgImage")
     var bgImage_text = document.getElementById("bgImageInput")
     var removebgImage_button = document.getElementById("removeBg")
+    var minifyButton_setting_button = document.getElementById("minifyButton")
+    var minifyButton_setting_check = document.getElementById("minifyButtonCheck")
+    if (cfg["wantsHideButton"]) {
+        minifyButton_setting_check.className = "flexChild-faoVW3 switchEnabled-V2WDBB switch-3wwwcV valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX"
+    } else {
+        minifyButton_setting_check.className = "flexChild-faoVW3 switchEnabled-V2WDBB switch-3wwwcV valueUnchecked-2lU_20 value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX"
+    }
     bgImage_button.addEventListener("click", () => {
-        chrome.storage.sync.set({bgImage: bgImage_text.value})
-        chrome.storage.sync.get('bgImage', (data) => {
-            discordextra_log("Discord Extra", "Changed background to " + data.bgImage)
-            bgImage = data.bgImage
-        }) 
+        cfg["bgImage"] = bgImage_text.value
+        chrome.storage.sync.set({
+            "cfgData": cfg
+        })
+
+        chrome.storage.sync.get("cfgData", (data) => {
+            discordextra_log("Discord Extra", "Changed background to " + data.cfgData["bgImage"])
+        })
     })
     removebgImage_button.addEventListener("click", () => {
-        chrome.storage.sync.set({bgImage: ""})
+        cfg["bgImage"] = ""
+        saveCFG()
         discordextra_log("Discord Extra", "Removed Background Image, Reverted to normal.")
-        bgImage = ""
         var chatUI = document.getElementsByClassName("chat-3bRxxu")[0]
         var memberList = document.getElementsByClassName("content-3YMskv")[2]
         var memberHeader = document.getElementsByClassName("membersGroup-v9BXpm")[0]
@@ -64,15 +134,27 @@ function hookSettingsPage () {
         memberHeader.style.backgroundColor = "rgba(47, 49, 54,1)"
         memberContainer.style.backgroundColor = "rgba(47, 49, 54,1)"
     })
-    chrome.storage.sync.get('wantsHideBarBool', (data) => {
-        var wantsBar = data.wantsHideBarBool
-        if(wantsBar) {
-            sidebar_option.className = "flexChild-faoVW3 switchEnabled-V2WDBB switch-3wwwcV valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX"
+    minifyButton_setting_button.addEventListener("click", () => {
+        cfg["wantsHideButton"] = !cfg["wantsHideButton"]
+        if (cfg["wantsHideButton"]) {
+            minifyButton_setting_check.className = "flexChild-faoVW3 switchEnabled-V2WDBB switch-3wwwcV valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX"
         } else {
-            sidebar_option.className = "flexChild-faoVW3 switchEnabled-V2WDBB switch-3wwwcV valueUnchecked-2lU_20 value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX"
+            minifyButton_setting_check.className = "flexChild-faoVW3 switchEnabled-V2WDBB switch-3wwwcV valueUnchecked-2lU_20 value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX"
+            document.getElementById("hideBarButton").remove()
         }
+        saveCFG()
     })
-    
+
+
+}
+for (theme of cfg["discordThemes"]) {
+    var themeButton = document.createElement("button")
+    themeButton.className = "savedItem"
+    themeButton.innerHTML = theme["name"]
+    themeButton.addEventListener("click", () => {
+        cfg["loadedTheme"] = theme
+    })
+    document.getElementById("savedThemes").appendChild(themeButton)
 }
 
 function hookAboutPage () {
@@ -88,7 +170,7 @@ function hookAboutPage () {
 }
 
 function setHideButtonFunc () {
-    if(!location.href.includes("@me") && document.getElementsByClassName("children-19S4PO")[0] != null && document.getElementsByClassName("sidebar-2K8pFh")[0] != null  && document.getElementById("hideBarButton") === null) {
+    if(cfg["wantsHideButton"] && !location.href.includes("@me") && document.getElementsByClassName("children-19S4PO")[0] != null && document.getElementsByClassName("sidebar-2K8pFh")[0] != null  && document.getElementById("hideBarButton") === null) {
         var toolbar = document.getElementsByClassName("children-19S4PO")[0]
         var sidebar = document.getElementsByClassName("sidebar-2K8pFh")[0]
         toolbar.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="22px" height="22px" id="hideBarButton" style="cursor:pointer;" enabledhide="false"><path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z"/><path d="M24 24H0V0h24v24z" fill="none"/></svg>' + toolbar.innerHTML
@@ -123,13 +205,13 @@ if(location.href.split("/")[location.href.split("/").length - 1] != "@me") {
     var getExist = setInterval((e) => {
         if(document.getElementsByClassName("chat-3bRxxu")[0] != null) 
         {
-            if(bgImage != "") {
+            if(cfg["bgImage"] != "") {
                 var chatUI = document.getElementsByClassName("chat-3bRxxu")[0]
                 var memberList = document.getElementsByClassName("content-3YMskv")[2]
                 var memberHeader = document.getElementsByClassName("membersGroup-v9BXpm")[0]
                 var memberContainer = document.getElementsByClassName("members-1998pB")[0]
 
-                chatUI.style.backgroundImage = "linear-gradient(270deg, rgba(44,47,51,0.8) 0%, rgba(44,47,51,0.8) 100%),url('" + bgImage + "'"
+                chatUI.style.backgroundImage = "linear-gradient(270deg, rgba(44,47,51,0.8) 0%, rgba(44,47,51,0.8) 100%),url('" + cfg["bgImage"] + "'"
                 chatUI.style.backgroundSize = "auto"
                 chatUI.style.backgroundRepeat = "no-repeat"
                 chatUI.style.opacity = "1"
@@ -214,6 +296,59 @@ var hookSetting = setInterval(() => {
     }
 },100)
 
+function loadTheme() {
+    // "name": "Discord Default",
+    // "focusedTheme": "inherit",
+    // "themeData": {
+    //     "teritary": "",
+    //     "secondary": "",
+    //     "secondary-alt": "",
+    //     "interactive-unactive": "",
+    //     "interactive-active": "",
+    //     "channel-text": "",
+    //     "message-date": "",
+    //     "message-color": ""
+    // }
+    switch (cfg["loadedTheme"]["focusedTheme"]) {
+        case "dark":
+            for(elem of document.getElementsByClassName("theme-light")) { elem.className = elem.className.replace("theme-light", "theme-dark")};
+            break;
+        case "light":
+            for(elem of document.getElementsByClassName("theme-dark")) { elem.className = elem.className.replace("theme-dark", "theme-light")};
+        default:
+            break;
+    }
+    for(key in Object.keys(cfg["loadedTheme"]["themeData"])) {
+        if(cfg["loadedTheme"]["themeData"][key] != "") {
+            switch(key) {
+                case "teitary":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-tertiary", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+                case "secondary":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-secondary", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+                case "secondary-alt":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-secondary-alt", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+                case "interactive-unactive":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-secondary", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+                case "secondary":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-secondary", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+                case "secondary":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-secondary", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+                case "secondary":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-secondary", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+                case "secondary":
+                    document.getElementsByTagName("html")[0].style.setProperty("--background-secondary", cfg["loadedTheme"]["themeData"][key]);
+                    break;
+            }
+        }
+    }
+}
 
 // function clearSettingsDiv () {
 //     document.getElementsByClassName("contentColumn-2hrIYH contentColumnDefault-1VQkGM")[0].childNodes[0].innerHTML = ""
